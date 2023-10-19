@@ -3,7 +3,7 @@ from flask_cors import CORS
 import requests  # Import requests library
 
 app = Flask(__name__)
-CORS(app, resources={r"/process": {"origins": "https://genai-main-poc.web.app/", "http://localhost:3000/}})
+CORS(app, resources={r"/process": {"origins": ["https://genai-main-poc.web.app/", "http://localhost:3000/"]}})
 
 # Define the endpoint URL and headers for the ChatGPT model
 chatgpt_url = "https://courseadminbot.azurewebsites.net/botReplyGenerate"
