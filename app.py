@@ -22,7 +22,7 @@ def get_chatgpt_completion(conversation):
 
 @app.route('/process', methods=['POST'])
 def process():
-    user_input = request.json.get('user_input')
+    user_input = "hi"
     # Check if the user input is the completion trigger
     if user_input.strip().lower() == "i have completed viewing the video":
         response = "Great! If you have any more questions in the future, feel free to ask."
