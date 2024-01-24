@@ -23,7 +23,7 @@ def get_chatgpt_completion(conversation):
 @app.route('/process', methods=['POST'])
 def process():
     user_input = request.json.get('user_input')
-
+    user_input1 = request.json.get('user_input1')
     # Check if the user input is the completion trigger
     if user_input.strip().lower() == "i have completed viewing the video":
         response = "Great! If you have any more questions in the future, feel free to ask."
@@ -34,6 +34,7 @@ def process():
         if not conversation_history:
             conversation_history.append([])  # Start a new conversation if there's none
         # Add user message to the current conversation
+        conversation_history[-1].append({"role": "assistant", "content": user_input1})
         conversation_history[-1].append({"role": "user", "content": user_input})
 
         # Get chatbot response based on the entire conversation history
