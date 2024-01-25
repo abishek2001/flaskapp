@@ -21,11 +21,11 @@ def get_chatgpt_completion(conversation):
 @app.route('/process', methods=['POST'])
 def process():
     user_input = request.json.get('user_input')
-    user_input1 = request.json.get('user_input1')
-    user_input2 = request.json.get('user_input2')
-    user_input3 = request.json.get('user_input3')
-    user_input4 = request.json.get('user_input4')
-    user_input5 = request.json.get('user_input5')
+    login_id = request.json.get('login_id')
+    role = request.json.get('role')
+    proficiency_level = request.json.get('proficiency_level')
+    language = request.json.get('language')
+    geography = request.json.get('geography')
     # Check if the user input is the completion trigger
     if user_input.strip().lower() == "i have completed viewing the video":
         response = "Great! If you have any more questions in the future, feel free to ask."
@@ -39,11 +39,11 @@ def process():
         conversation_history[-1].append({"role": "user", "content": user_input})
         # Get chatbot response based on the entire conversation history
         chatgpt_request = {'user_message': user_input,
-                            'login_id': int(user_input1),
-                            'role': user_input2,
-                            'proficiency_level': user_input3,
-                            'language': user_input4,
-                            'geography': user_input5}
+                            'login_id': int(login_id),
+                            'role': role,
+                            'proficiency_level': proficiency_level,
+                            'language': language,
+                            'geography': geography}
         chatgpt_response = get_chatgpt_completion(chatgpt_request)
         response = chatgpt_response
         # function_call = chatgpt_response.get("function_call")
