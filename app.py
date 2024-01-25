@@ -33,7 +33,7 @@ def process():
         # Add user message to the current conversation
         conversation_history[-1].append({"role": "user", "content": user_input})
         # Get chatbot response based on the entire conversation history
-        chatgpt_request = {'user_input': user_input,
+        chatgpt_request = {'user_message': user_input,
                             'login_id': 56,
                             'role': "Customer Expert Specialist",
                             'proficiency_level': "Beginner",
