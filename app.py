@@ -8,15 +8,15 @@ CORS(app, resources={r"/process": {"origins": "*"}})
 
 
 # Define the endpoint URL and headers for the ChatGPT model
-chatgpt_url = "https://courseadminbot.azurewebsites.net/botReplyGenerate"
-chatgpt_headers = {
-    "Content-Type": "application/json",
-    "x-functions-key": "q0j51tgxCOqqg2sBLyTV41CeTxKt5hmCh1lqSAxb7IEDAzFu7gRl3g=="
-}
+chatgpt_url = "http://35.200.210.182:8000/chat_conversation"
+# chatgpt_headers = {
+#     "Content-Type": "application/json",
+#     "x-functions-key": "q0j51tgxCOqqg2sBLyTV41CeTxKt5hmCh1lqSAxb7IEDAzFu7gRl3g=="
+# }
 # Initialize conversation history as an empty list
 conversation_history = []
 def get_chatgpt_completion(conversation):
-    response = requests.post(chatgpt_url, json=conversation, headers=chatgpt_headers)
+    response = requests.post(chatgpt_url, json=conversation, timeout=10)
     return response.json()
 @app.route('/process', methods=['POST'])
 def process():
@@ -33,15 +33,19 @@ def process():
         # Add user message to the current conversation
         conversation_history[-1].append({"role": "user", "content": user_input})
         # Get chatbot response based on the entire conversation history
-        chatgpt_request = {'course_structure': {'skill': 'Business Communication', 'topics': ["Introduction to business communication","Basic communication principles","Effective verbal communication","Active listening skills","Written communication skills","Non-verbal communication","Professional email etiquette"]},
-                           'conv_history': conversation_history}
+        chatgpt_request = {'conv_history': user_input,
+                            'login_id': 56,
+                            'role': "Customer Expert Specialist",
+                            'proficiency_level': "Beginner",
+                            'language': "English",
+                            'geography': "India"}
         chatgpt_response = get_chatgpt_completion(chatgpt_request)
-        response = chatgpt_response.get("message")
-        function_call = chatgpt_response.get("function_call")
-        # Check if a function call is received, and perform redirection
-        if function_call:
-            response ="Redirect"
-            conversation_history.append([])
+        response = chatgpt_response
+        # function_call = chatgpt_response.get("function_call")
+        # # Check if a function call is received, and perform redirection
+        # if function_call:
+        #     response ="Redirect"
+        #     conversation_history.append([])
         # Add chatbot message to the current conversation
         conversation_history[-1].append({"role": "assistant", "content": response})
     print(response)
