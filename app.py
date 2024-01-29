@@ -8,7 +8,7 @@ CORS(app, resources={r"/process": {"origins": "*"}})
 
 
 # Define the endpoint URL and headers for the ChatGPT model
-chatgpt_url = "http://35.200.210.182:8000/chat_conversation"
+chatgpt_url = "http://34.93.3.215:8000/chat_conversation"
 # chatgpt_headers = {
 #     "Content-Type": "application/json",
 #     "x-functions-key": "q0j51tgxCOqqg2sBLyTV41CeTxKt5hmCh1lqSAxb7IEDAzFu7gRl3g=="
