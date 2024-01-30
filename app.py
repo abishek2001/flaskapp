@@ -36,6 +36,10 @@ def process():
         if not conversation_history:
             conversation_history.append([])  # Start a new conversation if there's none
         # Add user message to the current conversation
+        endpoint_url = "http://34.93.3.215:8000/"
+        response = requests.get(endpoint_url)
+        endpoint_message = response.json()
+        conversation_history[-1].append({"role": "assistant", "content": endpoint_message})
         conversation_history[-1].append({"role": "user", "content": user_input})
         # Get chatbot response based on the entire conversation history
         chatgpt_request = {'user_message': user_input,
