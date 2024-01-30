@@ -26,6 +26,10 @@ def process():
     proficiency_level = request.json.get('proficiency_level')
     language = request.json.get('language')
     geography = request.json.get('geography')
+    endpoint_url = "http://34.93.3.215:8000/"
+    response = requests.get(endpoint_url)
+    endpoint_message = response.json()
+    conversation_history[-1].append({"role": "assistant", "content": endpoint_message})
     # Check if the user input is the completion trigger
     if user_input.strip().lower() == "i have completed viewing the video":
         response = "Great! If you have any more questions in the future, feel free to ask."
@@ -36,10 +40,6 @@ def process():
         if not conversation_history:
             conversation_history.append([])  # Start a new conversation if there's none
         # Add user message to the current conversation
-        endpoint_url = "http://34.93.3.215:8000/"
-        response = requests.get(endpoint_url)
-        endpoint_message = response.json()
-        conversation_history[-1].append({"role": "assistant", "content": endpoint_message})
         conversation_history[-1].append({"role": "user", "content": user_input})
         # Get chatbot response based on the entire conversation history
         chatgpt_request = {'user_message': user_input,
