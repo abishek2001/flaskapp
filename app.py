@@ -23,6 +23,15 @@ conversation_history = []
 def get_chatgpt_completion(conversation):
     response = requests.post(chatgpt_url, json=conversation, timeout=10)
     return response.json()
+@app.route('/get_welcome_message', methods=['GET'])
+def get_welcome_message():
+    try:
+        api_response = requests.get('http://34.93.3.215:8000/welcome_message')
+        data = api_response.json()
+        return jsonify(data)
+    except Exception as e:
+        print(f"Error fetching data: {e}")
+        return jsonify({"error": "Internal Server Error"}), 500
 @app.route('/process', methods=['POST'])
 def process():
     user_input = request.json.get('user_input')
