@@ -5,7 +5,7 @@ import requests  # Import requests library
 app = Flask(__name__)
 CORS(app, resources={r"/process": {"origins": ["https://genai-main-poc.web.app/", "http://localhost:3000/"]}})
 CORS(app, resources={r"/process": {"origins": "*"}})
-ORS(app, resources={r"/get_welcome_message": {"origins": ["https://genai-main-poc.web.app/", "http://localhost:3000/"]}})
+CORS(app, resources={r"/get_welcome_message": {"origins": ["https://genai-main-poc.web.app/", "http://localhost:3000/"]}})
 CORS(app, resources={r"/get_welcome_message": {"origins": "*"}})
 
 
