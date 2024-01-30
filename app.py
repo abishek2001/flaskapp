@@ -15,10 +15,11 @@ chatgpt_url = "http://34.93.3.215:8000/chat_conversation"
 # }
 # Initialize conversation history as an empty list
 conversation_history = []
-# endpoint_url = "http://34.93.3.215:8000/"
-# response = requests.get(endpoint_url)
-# endpoint_message = response.json()
-# conversation_history[-1].append({"role": "assistant", "content": endpoint_message})
+endpoint_url = "http://34.93.3.215:8000/"
+response = requests.get(endpoint_url)
+endpoint_message = response.json()
+conversation_history.append([]) 
+conversation_history[-1].append({"role": "assistant", "content": endpoint_message})
 def get_chatgpt_completion(conversation):
     response = requests.post(chatgpt_url, json=conversation, timeout=10)
     return response.json()
