@@ -15,6 +15,10 @@ chatgpt_url = "http://34.93.3.215:8000/chat_conversation"
 # }
 # Initialize conversation history as an empty list
 conversation_history = []
+endpoint_url = "http://34.93.3.215:8000/"
+response = requests.get(endpoint_url)
+endpoint_message = response.json()
+conversation_history[-1].append({"role": "assistant", "content": endpoint_message})
 def get_chatgpt_completion(conversation):
     response = requests.post(chatgpt_url, json=conversation, timeout=10)
     return response.json()
@@ -26,10 +30,6 @@ def process():
     proficiency_level = request.json.get('proficiency_level')
     language = request.json.get('language')
     geography = request.json.get('geography')
-    endpoint_url = "http://34.93.3.215:8000/"
-    response = requests.get(endpoint_url)
-    endpoint_message = response.json()
-    conversation_history[-1].append({"role": "assistant", "content": endpoint_message})
     # Check if the user input is the completion trigger
     if user_input.strip().lower() == "i have completed viewing the video":
         response = "Great! If you have any more questions in the future, feel free to ask."
