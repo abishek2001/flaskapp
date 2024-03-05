@@ -46,6 +46,10 @@ def process():
     else:
         if not conversation_history:
             conversation_history.append([])  # Start a new conversation if there's none
+        api_response = requests.get('http://34.93.3.215:8000/welcome_message')
+        data = api_response.json()
+        response=data['conversation'][0]['message']
+        conversation_history[-1].append({"role": "assistant", "content": response})
         # Add user message to the current conversation
         conversation_history[-1].append({"role": "user", "content": user_input})
         # Get chatbot response based on the entire conversation history
