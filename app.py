@@ -52,7 +52,6 @@ def process():
         conversation_history[-1].append({"role": "assistant", "content": response})
         # Add user message to the current conversation
         conversation_history[-1].append({"role": "user", "content": user_input})
-        # Get chatbot response based on the entire conversation history
         chatgpt_request = {'user_message': user_input, 'conversation_history': conversation_history}
         chatgpt_response = get_chatgpt_completion(chatgpt_request)
         response = chatgpt_response
