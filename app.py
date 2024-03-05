@@ -37,11 +37,6 @@ def get_welcome_message():
 @app.route('/process', methods=['POST'])
 def process():
     user_input = request.json.get('user_input')
-    login_id = request.json.get('login_id')
-    role = request.json.get('role')
-    proficiency_level = request.json.get('proficiency_level')
-    language = request.json.get('language')
-    geography = request.json.get('geography')
     # Check if the user input is the completion trigger
     if user_input.strip().lower() == "i have completed viewing the video":
         response = "Great! If you have any more questions in the future, feel free to ask."
