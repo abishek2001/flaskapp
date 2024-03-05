@@ -64,6 +64,7 @@ def process():
         # Add chatbot message to the current conversation
         conversation_history[-1].append({"role": "assistant", "content": response})
     print(response)
+    print("Conversation History" + conversation_history)
     return jsonify({"response": response})
 if __name__ == '__main__':
     app.run(debug=True)
