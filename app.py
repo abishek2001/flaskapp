@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify,  redirect, session
 from flask_cors import CORS
 import requests  # Import requests library
+import uuid
 app = Flask(__name__)
 app.secret_key = "disprz123"
 CORS(app, resources={r"/process": {"origins": ["https://genai-main-poc.web.app/", "http://localhost:3000/"]}})
