@@ -50,8 +50,7 @@ def process():
         chatgpt_request = {'user_message': user_input, 'conversation_history': user_conversations[user_id]}
         chatgpt_response = get_chatgpt_completion(chatgpt_request)
         response = chatgpt_response
-        user_conversations[user_id].append({"role": "assistant", "content": response})
-
+        user_conversations[user_id].append({"role": "assistant", "content": response['response']})
     print(response)
     print("Conversation History: ")
     print(user_conversations)
