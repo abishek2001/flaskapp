@@ -34,6 +34,7 @@ def get_welcome_message():
         return jsonify({"error": "Internal Server Error"}), 500
 @app.route('/process', methods=['POST'])
 def process():
+    user_input = request.json.get('user_input')
     # Check if the user input is the completion trigger
     if user_input.strip().lower() == "i have completed viewing the video":
         response = "Great! If you have any more questions in the future, feel free to ask."
@@ -60,6 +61,7 @@ def process():
     print(response)
     print("Conversation History: ")
     print(session['conversation_history'])
-    return jsonify({"response": response}
+    return jsonify({"response": response})
+
 if __name__ == '__main__':
     app.run(debug=True)
