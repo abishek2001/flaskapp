@@ -1,30 +1,20 @@
-from flask import Flask, request, jsonify,  redirect, session
+from flask import Flask, request, jsonify, session
 from flask_cors import CORS
-import requests  # Import requests library
+import requests
 
 app = Flask(__name__)
-app.secret_key = "disprz123"
+app.secret_key = "disprz"  # Change this to a random secret key
 CORS(app, resources={r"/process": {"origins": ["https://genai-main-poc.web.app/", "http://localhost:3000/"]}})
 CORS(app, resources={r"/process": {"origins": "*"}})
 CORS(app, resources={r"/get_welcome_message": {"origins": ["https://genai-main-poc.web.app/", "http://localhost:3000/"]}})
 CORS(app, resources={r"/get_welcome_message": {"origins": "*"}})
-# Define the endpoint URL and headers for the ChatGPT model
+
 chatgpt_url = "http://34.93.3.215:8000/chat_conversation"
 
-# chatgpt_headers = {
-#     "Content-Type": "application/json",
-#     "x-functions-key": "q0j51tgxCOqqg2sBLyTV41CeTxKt5hmCh1lqSAxb7IEDAzFu7gRl3g=="
-# }
-# Initialize conversation history as an empty list
-conversation_history = []
-# endpoint_url = "http://34.93.3.215:8000/"
-# response = requests.get(endpoint_url)
-# endpoint_message = response.json()
-# conversation_history.append([]) 
-# conversation_history[-1].append({"role": "assistant", "content": endpoint_message})
 def get_chatgpt_completion(conversation):
     response = requests.post(chatgpt_url, json=conversation, timeout=10)
     return response.json()
+
 @app.route('/get_welcome_message', methods=['GET'])
 def get_welcome_message():
     try:
@@ -38,28 +28,31 @@ def get_welcome_message():
 @app.route('/process', methods=['POST'])
 def process():
     user_input = request.json.get('user_input')
-    if 'conversation_history' not in session:
-        session['conversation_history'] = []
 
+    # Check if the user input is the completion trigger
     if user_input.strip().lower() == "i have completed viewing the video":
-        # Reset conversation history when the user completes viewing the video
         response = "Great! If you have any more questions in the future, feel free to ask."
-        session['conversation_history'] = []
-
+        session.pop('conversation_history', None)  # Reset the conversation history for the current user
     else:
-        # Continue the conversation
+        # Initialize conversation history for the current user if not present
+        conversation_history = session.get('conversation_history', [])
+        
         api_response = requests.get('http://34.93.3.215:8000/welcome_message')
         data = api_response.json()
         response = data['conversation'][0]['message']
-        session['conversation_history'].append({"role": "assistant", "content": response})
-        session['conversation_history'].append({"role": "user", "content": user_input})
-        chatgpt_request = {'user_message': user_input, 'conversation_history': session['conversation_history']}
+        conversation_history.append({"role": "assistant", "content": response})
+        
+        # Add user message to the current conversation
+        conversation_history.append({"role": "user", "content": user_input})
+        chatgpt_request = {'user_message': user_input, 'conversation_history': conversation_history}
         chatgpt_response = get_chatgpt_completion(chatgpt_request)
         response = chatgpt_response
 
-    print(response)
+        # Update the session variable with the modified conversation history
+        session['conversation_history'] = conversation_history
+
     print("Conversation History: ")
-    print(session['conversation_history'])
+    print(session.get('conversation_history', []))
 
     return jsonify({"response": response})
 
