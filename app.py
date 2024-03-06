@@ -45,11 +45,6 @@ def process():
         response = "Great! If you have any more questions in the future, feel free to ask."
         user_conversations[user_id] = []  # Start a new conversation
     else:
-        api_response = requests.get('http://34.93.3.215:8000/welcome_message')
-        data = api_response.json()
-        response = data['conversation'][0]['message']
-        user_conversations[user_id].append({"role": "assistant", "content": response})
-
         # Add user message to the current conversation
         user_conversations[user_id].append({"role": "user", "content": user_input})
         chatgpt_request = {'user_message': user_input, 'conversation_history': user_conversations[user_id]}
