@@ -9,11 +9,14 @@ CORS(app, resources={r"/get_welcome_message": {"origins": ["https://genai-main-p
 CORS(app, resources={r"/get_welcome_message": {"origins": "*"}})
 
 chatgpt_url = "http://34.93.3.215:8000/chat_conversation"
-user_sessions = {}
+user_conversations = {}
 
 def get_chatgpt_completion(conversation):
     response = requests.post(chatgpt_url, json=conversation, timeout=10)
     return response.json()
+
+def create_new_conversation(user_id):
+    user_conversations[user_id] = []
 
 @app.route('/get_welcome_message', methods=['GET'])
 def get_welcome_message():
@@ -27,31 +30,33 @@ def get_welcome_message():
 
 @app.route('/process', methods=['POST'])
 def process():
+    user_id = request.json.get('session_id')
     user_input = request.json.get('user_input')
-    user_ip = request.remote_addr  # Get user's IP address as a simple session identifier
 
-    if user_ip not in user_sessions:
-        user_sessions[user_ip] = []  # Create a new conversation history for the user
+    # Check if the user has an existing conversation
+    if user_id not in user_conversations:
+        create_new_conversation(user_id)
 
     # Check if the user input is the completion trigger
     if user_input.strip().lower() == "i have completed viewing the video":
         response = "Great! If you have any more questions in the future, feel free to ask."
-        user_sessions[user_ip].append({"role": "user", "content": user_input})
-        user_sessions[user_ip].append({"role": "assistant", "content": response})
+        user_conversations[user_id] = []  # Start a new conversation
     else:
         api_response = requests.get('http://34.93.3.215:8000/welcome_message')
         data = api_response.json()
         response = data['conversation'][0]['message']
-        user_sessions[user_ip].append({"role": "assistant", "content": response})
-        user_sessions[user_ip].append({"role": "user", "content": user_input})
-        chatgpt_request = {'user_message': user_input, 'conversation_history': user_sessions[user_ip]}
+        user_conversations[user_id].append({"role": "assistant", "content": response})
+
+        # Add user message to the current conversation
+        user_conversations[user_id].append({"role": "user", "content": user_input})
+        chatgpt_request = {'user_message': user_input, 'conversation_history': user_conversations[user_id]}
         chatgpt_response = get_chatgpt_completion(chatgpt_request)
         response = chatgpt_response
-        user_sessions[user_ip].append({"role": "assistant", "content": response})
+        user_conversations[user_id].append({"role": "assistant", "content": response})
 
     print(response)
     print("Conversation History: ")
-    print(user_sessions[user_ip])
+    print(user_conversations)
     return jsonify({"response": response})
 
 if __name__ == '__main__':
