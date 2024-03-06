@@ -37,9 +37,11 @@ def get_welcome_message():
 def process():
     user_input = request.json.get('user_input')
 
-    # Check if the session exists
-    if 'conversation_history' not in session:
-        session['conversation_history'] = []  # Start a new conversation for a new session
+    # Check if the session ID is present
+    if 'session_id' not in session:
+        # Generate a new session ID
+        session['session_id'] = str(uuid.uuid4())
+        session['conversation_history'] = []
 
     # Check if the user input is the completion trigger
     if user_input.strip().lower() == "i have completed viewing the video":
@@ -61,7 +63,7 @@ def process():
 
         session['conversation_history'].append({"role": "assistant", "content": response})
 
-    
+    print(response)
     print("Conversation History: ")
     print(session['conversation_history'])
     return jsonify({"response": response})
