@@ -35,7 +35,11 @@ def process():
     # Check if the user has an existing conversation
     if user_id not in user_conversations:
         create_new_conversation(user_id)
-
+        api_response = requests.get('http://34.93.3.215:8000/welcome_message')
+        data = api_response.json()
+        response = data['conversation'][0]['message']
+        user_conversations[user_id].append({"role": "assistant", "content": response})
+        
     # Check if the user input is the completion trigger
     if user_input.strip().lower() == "i have completed viewing the video":
         response = "Great! If you have any more questions in the future, feel free to ask."
