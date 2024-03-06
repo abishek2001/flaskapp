@@ -32,9 +32,15 @@ def get_welcome_message():
     except Exception as e:
         print(f"Error fetching data: {e}")
         return jsonify({"error": "Internal Server Error"}), 500
+
 @app.route('/process', methods=['POST'])
 def process():
     user_input = request.json.get('user_input')
+
+    # Check if the session exists
+    if 'conversation_history' not in session:
+        session['conversation_history'] = []  # Start a new conversation for a new session
+
     # Check if the user input is the completion trigger
     if user_input.strip().lower() == "i have completed viewing the video":
         response = "Great! If you have any more questions in the future, feel free to ask."
@@ -42,9 +48,6 @@ def process():
         session['conversation_history'].append({"role": "user", "content": user_input})
         session['conversation_history'].append({"role": "assistant", "content": response})
     else:
-        if 'conversation_history' not in session:
-            session['conversation_history'] = []  # Start a new conversation if there's none
-
         api_response = requests.get('http://34.93.3.215:8000/welcome_message')
         data = api_response.json()
         response = data['conversation'][0]['message']
@@ -58,7 +61,7 @@ def process():
 
         session['conversation_history'].append({"role": "assistant", "content": response})
 
-    print(response)
+    
     print("Conversation History: ")
     print(session['conversation_history'])
     return jsonify({"response": response})
